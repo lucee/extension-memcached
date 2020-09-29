@@ -18,7 +18,7 @@
  ---><cfcomponent extends="Cache">
 	
     <cfset fields=array(
-		field("Servers","servers","",true,"please define here a list of all Servers you wanna connect, please follow this pattern:<br> Host:Port&lt;new line><br> Host:Port&lt;new line><br>Host:Port","textarea")
+		field("Servers","servers","",true,"Please define here a list of all servers you would like to connect to, please follow this pattern:<br> Host:Port&lt;new line><br> Host:Port&lt;new line><br>Host:Port","textarea")
 		,field("Expires","default_expires","600",false,
 			"default expires time for elements in cache","time")
 		,field('Failure Mode','failure_mode','Redistribute',true,
@@ -30,7 +30,7 @@
 		,field('Compress','compress','true',true,
 			'if enabled all objects bigger than 1mb get compressed (GZIP) when written to the cache and uncompressed when read again from the cache.'
 			,"checkbox")
-		,field("Log","log","",false,"Name of an existing log, you wanna store information into.","text")
+		,field("Log","log","",false,"Name of an existing log you would like to store information into.","text")
 		
 	)>
     
