@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/lucee.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Java 10.0.2 JDK">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/javax.el-api-3.0.0.jar"/>
-	<classpathentry kind="lib" path="libs/javax.servlet-api-3.1.0.jar"/>
-	<classpathentry kind="lib" path="libs/jsp-api-2.2.jar"/>
-	<classpathentry kind="lib" path="libs/org.apache.felix.framework-4.2.1.jar"/>
-	<classpathentry kind="lib" path="libs/lucee.jar"/>
-	<classpathentry kind="lib" path="libs/org.lucee.spymemcached-2.12.3.jar"/>
+	<classpathentry kind="lib" path="lib/org.lucee.spymemcached-2.12.3.0001.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

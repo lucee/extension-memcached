@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Export-Package: org.lucee.extension.cache.mc
 Bundle-ManifestVersion: 2
-Require-Bundle: org.lucee.spymemcached;bundle-version=2.12.3
+Require-Bundle: org.lucee.spymemcached;bundle-version=2.12.3.0001

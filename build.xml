@@ -1,83 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="clean" basedir="." name="formtag-extension">
-	<description>
-        Build Form Extension
-    </description>
-    <!-- set global properties for this build -->
-  
-  <property file="build.properties"/>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project default="clean" basedir="." name="memcached-extension">
+	<description>Build Memcached Extension</description>
 
-  <property name="lib" location="source/java/libs"/>
-  <property name="src" location="source/java/src"/>
-  <property name="srcCFML" location="source/CFML/src"/>
-  <property name="srcImg" location="source/images"/>
-  <property name="temp" location="temp"/>
-  <property name="build" location="build"/>
-  <property name="dist"  location="dist"/>
+  <property name="fld" location="source/fld"/>
+  <property name="tld" location="source/tld"/>
 
-
-  
-  <buildnumber file="build.number"/>
-
-  <scriptdef name="pack200" language="javascript">
-     <attribute name="directory" />
-     <![CDATA[
-      
-
-     var dir = new java.io.File(attributes.get("directory"));
-     var files=dir.listFiles();
-
-      // prepare Pack200
-      var packer = java.util.jar.Pack200.newPacker();
-
-      // Initialize the state by setting the desired properties
-      var p = packer.properties();
-      p.put(java.util.jar.Pack200.Packer.EFFORT, "7");  // default is "5"
-      p.put(java.util.jar.Pack200.Packer.SEGMENT_LIMIT, "-1");
-      p.put(java.util.jar.Pack200.Packer.KEEP_FILE_ORDER, java.util.jar.Pack200.Packer.FALSE);
-      p.put(java.util.jar.Pack200.Packer.MODIFICATION_TIME, java.util.jar.Pack200.Packer.LATEST);
-      p.put(java.util.jar.Pack200.Packer.DEFLATE_HINT, java.util.jar.Pack200.Packer.FALSE);
-      //p.put(java.util.jar.Pack200.Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", java.util.jar.Pack200.Packer.STRIP);
-      p.put(java.util.jar.Pack200.Packer.UNKNOWN_ATTRIBUTE, java.util.jar.Pack200.Packer.ERROR);
-    
-      for(var i=0;i<files.length;i++) {
-        var trgJar=files[i];
-        if(!trgJar.getName().endsWith(".jar")) continue;
-
-        // jar -> pack200
-
-        var name=trgJar.getName();
-        var index=name.lastIndexOf(".jar");
-        name=name.substring(0,index)+".pack.gz";
-        var trgPack=new java.io.File( files[i].getParentFile() , name);
-
-        var is=null;
-        var os=null;
-        
-        try {
-          var echo = project.createTask( "echo" );
-          echo.setMessage("- pack "+name);
-          echo.perform();
-
-          is = new java.util.jar.JarInputStream(new java.io.FileInputStream(trgJar));
-          os=new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(trgPack));
-          packer.pack(is, os);
-          trgJar.delete();
-
-        }
-        finally {
-          if(is!=null) {
-            try {is.close();} catch(e) {}
-          }
-          if(os!=null) {
-            try {os.close();} catch(e) {}
-          }
-        } 
-      }
-     ]]>
-  </scriptdef>
-
-
+	<import file="build-compile.xml"/>
 
   <scriptdef name="replace" language="javascript">
      <attribute name="haystack" />
@@ -96,135 +24,68 @@
      ]]>
   </scriptdef>
 
-  <path id="classpath">
-    <fileset dir="${lib}">
-      <include name="**/*.jar" />
-    </fileset>
-  </path>
-
-  <target name="init">
-    <!-- Create the time stamp -->
-    <tstamp/>
-    
-    <delete dir="${temp}"/>
-    <delete dir="${dist}"/>
-
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${temp}"/>
-    <mkdir dir="${build}"/>
-    <mkdir dir="${dist}/"/>
+	<target name="dist" depends="compile" description="copy source file to temp" >
 
 
-  </target>
-
-
-  <target name="copy" depends="init" description="copy source file to temp" >
-    <!-- copy the source -->
-    <copy todir="${temp}">
-      <fileset dir="${src}">
-        <include name="**/*.java"/>
-      </fileset>
-    </copy>
-
-
-    <tstamp>
-     <format property="NOW" pattern="yyyy-MM-dd HH:mm:ss" />
-    </tstamp>
-
-    <echo file="${dist}/extension/META-INF/MANIFEST.MF">Manifest-Version: 1.0
+		<!-- Manifest of the extension -->
+		<echo file="${dist}/extension2/META-INF/MANIFEST.MF">Manifest-Version: 1.0
 Built-Date: ${NOW}
-version: "${bundleversion}${build.number}${bundleversionappendix}"
+version: "${bundleversion}${build.number}${bundleversion_appendix}"
 id: "${id}"
 name: "${label}"
 description: "${description}"
-lucee-core-version: "5.0.0.230"
 start-bundles: false
-release-type: server
-cache: "[{'class':'${class}','bundleName':'${bundlename}','bundleVersion':'${bundleversion}${build.number}${bundleversionappendix}'}]"
+release-type: ${releaseType}
+cache: "[{'class':'${class}','bundleName':'${bundlename}','bundleVersion':'${bundleversion}${build.number}${bundleversion_appendix}'}]"
 </echo>
-  </target>
-  
 
 
-  <target name="compile" depends="copy"
-        description="compile the source " >
-    <!-- Compile ACF-Infinspan source -->
-    <javac srcdir="${temp}" target="1.7" destdir="${build}" debug="true" debuglevel="lines,vars,source">
-      <classpath refid="classpath" />
-    </javac>
-  </target>
+		<!-- copy the jars necessary -->
+		<copy todir="${dist}/extension2/jars">
+			<fileset dir="${lib}">
+				<include name="**/*.jar"/>
+				<exclude name="**/javax.servlet.jar"/>
+				<exclude name="**/lucee*.jar"/>
+			</fileset>
+		</copy>
 
-  <target name="dist" depends="compile"
-        description="generate the distribution" >
-    
- 
-    <!-- Put everything in ${build} into .jar file -->
-    <jar 
-    	jarfile="${dist}/extension/jars/${filename}-${bundleversion}${build.number}${bundleversionappendix}.jar" basedir="${build}"  manifest="${src}/META-INF/MANIFEST.MF">
-      <manifest>
-        <attribute name="Bundle-Version" value="${bundleversion}${build.number}${bundleversionappendix}"/>
-        <attribute name="Built-Date" value="${NOW}"/>
-        <attribute name="Bundle-SymbolicName" value="${bundlename}"/>
-
-      </manifest>
-    </jar>
-
-    <!-- copy the context necessary -->
-    <copy todir="${dist}/extension/context">
-      <fileset dir="${srcCFML}/context">
-        <include name="**/*.*"/>
-      </fileset>
-    </copy>
-
-    <!-- copy the flds necessary -->
-    <loadfile property="c1" srcFile="${srcCFML}/context/admin/cdriver/MemCached.cfc" />
-    <replace haystack="${c1}" needle="{class}" repl="${class}" property="c2"/>
-    <replace haystack="${c2}" needle="{label}" repl="${label}" property="c3"/>
-    <replace haystack="${c3}" needle="{desc}" repl="${description}" property="c4"/>
-    <replace haystack="${c4}" needle="{bundlename}" repl="${bundlename}" property="c5"/>
-    <replace haystack="${c5}" needle="{bundleversion}" repl="${bundleversion}${build.number}${bundleversionappendix}" property="c6"/>
-    <echo message="${c6}" file="${dist}/extension/context/admin/cdriver/MemCached.cfc"/>
+		<!-- copy the jar just build -->
+		<copy todir="${dist}/extension2/jars">
+			<fileset dir="${temp}/jars/">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<move
+			file="${dist}/extension2/jars/lucee.extension.${codename}.jar"
+			tofile="${dist}/extension2/jars/lucee.extension.${codename}-${bundleversion}${build.number}${bundleversion_appendix}.jar"/>
 
 
+		<!-- Memcached.cfc -->
+		<loadfile property="content1" srcFile="${build}/context/admin/cdriver/${camelname}.cfc" />
+		<replace haystack="${content1}" needle="{class}" repl="${class}" property="content2"/>
+		<replace haystack="${content2}" needle="{label}" repl="${lab}" property="content3"/>
+		<replace haystack="${content3}" needle="{desc}" repl="${description}" property="content4"/>
+		<echo message="${content4}" file="${dist}/extension2/context/admin/cdriver/${camelname}.cfc"/>
 
-    
+		<!-- copy the logos -->
+		<copy todir="${dist}/extension2/META-INF">
+			<fileset dir="${build}/images">
+				<include name="logo.png"/>
+			</fileset>
+		</copy>
 
-    <!-- copy the jars necessary -->
-    <copy todir="${dist}/extension/jars">
-      <fileset dir="${lib}">
-        <include name="**/*.jar"/>
-        <exclude name="**/javax.*"/>
-        <exclude name="**/jsp-*"/>
-        <exclude name="**/lucee.jar"/>
-        <exclude name="**/org.apache.felix.framework-*"/>
-        <exclude name="**/org.lucee.axis*"/>
-      </fileset>
-    </copy>
+		<!-- Zip everything  -->
+		<zip destfile="${dist}/${bundlename}-${bundleversion}${build.number}${bundleversion_appendix}.lex">
+				<zipfileset dir="${dist}/extension2"/>
+		</zip>
 
-    <!-- pack200 the jars
-    <pack200 directory="${dist}/extension/jars"/> -->
-
-
-    <!-- copy the logo -->
-    <copy todir="${dist}/extension/META-INF">
-      <fileset dir="${srcImg}/">
-        <include name="logo.png"/>
-      </fileset>
-    </copy>
-
-
-
-    <!-- Zip everything  -->
-     <zip destfile="${dist}/${filename}-${bundleversion}${build.number}${bundleversionappendix}.lex">
-        <zipfileset dir="${dist}/extension"/>
-    </zip>
-		
-  </target>
+	</target>
 
 	<target name="clean"  depends="dist" description="clean up" >
-		<!-- Delete the ${build} and ${dist} directory trees -->
-		<delete dir="${build}"/>
 		<delete dir="${temp}"/>
+		<delete dir="${dist}/extension2"/>
 	</target>
+
+
 
 </project>
