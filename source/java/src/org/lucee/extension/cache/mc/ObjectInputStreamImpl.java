@@ -16,13 +16,13 @@ public class ObjectInputStreamImpl extends ObjectInputStream {
 
 	@Override
 	protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-		if (cl == null)
-			return super.resolveClass(desc);
+		if (cl == null) return super.resolveClass(desc);
 
 		String name = desc.getName();
 		try {
 			return Class.forName(name, false, cl);
-		} catch (ClassNotFoundException ex) {
+		}
+		catch (ClassNotFoundException ex) {
 			return super.resolveClass(desc);
 		}
 	}

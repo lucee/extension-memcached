@@ -34,17 +34,17 @@ public class CacheUtil {
 		Struct info = CFMLEngineFactory.getInstance().getCreationUtil().createStruct();
 		try {
 			long value = c.hitCount();
-			if (value >= 0)
-				info.setEL("hit_count", new Double(value));
-		} catch (IOException ioe) {
+			if (value >= 0) info.setEL("hit_count", new Double(value));
+		}
+		catch (IOException ioe) {
 			// simply ignore
 		}
 
 		try {
 			long value = c.missCount();
-			if (value >= 0)
-				info.setEL("miss_count", new Double(value));
-		} catch (IOException ioe) {
+			if (value >= 0) info.setEL("miss_count", new Double(value));
+		}
+		catch (IOException ioe) {
 			// simply ignore
 		}
 
@@ -52,20 +52,17 @@ public class CacheUtil {
 	}
 
 	public static Object toTimespan(long timespan) {
-		if (timespan == 0)
-			return "";
+		if (timespan == 0) return "";
 
 		TimeSpan ts = CFMLEngineFactory.getInstance().getCastUtil().toTimespan(timespan);
 
-		if (ts == null)
-			return "";
+		if (ts == null) return "";
 		return ts;
 	}
 
 	public static String toString(CacheEntry ce) {
 
-		return "created:	" + ce.created() + "\nlast-hit:	" + ce.lastHit() + "\nlast-modified:	"
-				+ ce.lastModified()
+		return "created:	" + ce.created() + "\nlast-hit:	" + ce.lastHit() + "\nlast-modified:	" + ce.lastModified()
 
 				+ "\nidle-time:	" + ce.idleTimeSpan() + "\nlive-time	:" + ce.liveTimeSpan()
 
@@ -73,14 +70,11 @@ public class CacheUtil {
 	}
 
 	public static boolean allowAll(CacheFilter filter) {
-		if (filter == null)
-			return true;
+		if (filter == null) return true;
 
 		String p = filter.toPattern();
-		if (p == null)
-			p = "";
-		else
-			p = p.trim();
+		if (p == null) p = "";
+		else p = p.trim();
 
 		return p.equals("*") || p.equals("");
 	}
@@ -89,7 +83,8 @@ public class CacheUtil {
 		try {
 			Method m = config.getClass().getMethod("getClassLoaderEnv", new Class[0]);
 			return (ClassLoader) m.invoke(config, new Object[0]);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw CFMLEngineFactory.getInstance().getCastUtil().toPageException(e);
 		}
 	}
