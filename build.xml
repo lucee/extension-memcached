@@ -56,8 +56,8 @@ cache: "[{'class':'${class}','bundleName':'${bundlename}','bundleVersion':'${bun
 			</fileset>
 		</copy>
 		<move
-			file="${dist}/extension2/jars/lucee.extension.${codename}.jar"
-			tofile="${dist}/extension2/jars/lucee.extension.${codename}-${bundleversion}${build.number}${bundleversion_appendix}.jar"/>
+			file="${dist}/extension2/jars/${bundlename}.jar"
+			tofile="${dist}/extension2/jars/${bundlename}-${bundleversion}${build.number}${bundleversion_appendix}.jar"/>
 
 
 		<!-- Memcached.cfc -->
