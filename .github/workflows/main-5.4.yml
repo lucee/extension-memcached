@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      luceeVersionQuery: 5/any/light
+      luceeVersionQuery: 5/all/light
 
     steps:
     - name: Setup Memcached (docker)
