@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      luceeVersion: light-5.4.0.65-RC
+      luceeVersionQuery: 5/any/light
 
     steps:
     - name: Setup Memcached (docker)
@@ -30,9 +30,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: _actions/lucee/script-runner/main/lucee-download-cache
-        key: lucee-downloads-${{ env.luceeVersion }}
-        restore-keys: |
-          lucee-downloads
+        key: lucee-downloads
     - name: Build with Ant
       run: ant -noinput -verbose -buildfile build.xml
     - name: Upload Artifact
@@ -50,9 +48,8 @@ jobs:
       with:
         webroot: ${{ github.workspace }}/lucee/test
         execute: /bootstrap-tests.cfm
-        luceeVersion: ${{ env.luceeVersion }}
+        luceeVersionQuery: ${{ env.luceeVersionQuery }}
         extensionDir: ${{ github.workspace }}/dist
-        extensions:
       env:
         testLabels: memcached
         MEMCACHED_PORT: 11211
