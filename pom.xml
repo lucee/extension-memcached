@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lucee</groupId>
     <artifactId>memcached-extension</artifactId>
-    <version>4.0.0.13</version>
+    <version>4.0.0.14</version>
     <packaging>pom</packaging>
     <name>Memcached Extension</name>
 
@@ -122,6 +122,8 @@
                                     <property name="bundlename" value="${bundlename}"/>
                                     <property name="class" value="${class}"/>
                                     <property name="filename" value="${project.artifactId}"/>
+                                    <property name="groupId" value="${project.groupId}"/>
+                                    <property name="artifactId" value="${project.artifactId}"/>
                                     <property name="id" value="${id}"/>
                                     <property name="luceeCoreVersion" value="${luceeCoreVersion}"/>
                                     <property name="releaseType" value="${releaseType}"/>
