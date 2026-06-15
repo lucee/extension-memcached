@@ -4,15 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lucee</groupId>
     <artifactId>memcached-extension</artifactId>
-    <version>4.0.0.14</version>
+    <version>4.0.0.15</version>
     <packaging>pom</packaging>
     <name>Memcached Extension</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <id>16FF9B13-C595-4FA7-B87DED467B7E61A0</id>
+        <image>https://raw.githubusercontent.com/lucee/extension-memcached/master/source/images/logo.png</image>
+        <buildDate>${maven.build.timestamp}</buildDate>
         <bundlename>org.lucee.memcached.extension</bundlename>
         <class>org.lucee.extension.cache.mc.MemcachedCache</class>
         <luceeCoreVersion>5.0.0.0</luceeCoreVersion>
@@ -104,6 +107,30 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <flattenMode>bom</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Antrun plugin to execute the Ant build -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
